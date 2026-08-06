@@ -1,10 +1,24 @@
+import { useEffect, FC } from 'react';
+
 import { ProfileOrdersUI } from '@ui-pages';
-import { TOrder } from '@utils-types';
-import { FC } from 'react';
+import { Preloader } from '@ui';
+
+import { useDispatch, useSelector } from '../../services/store';
+import { fetchOrders } from '../../services/slices/orders-slice';
 
 export const ProfileOrders: FC = () => {
-  /** TODO: взять переменную из стора */
-  const orders: TOrder[] = [];
+    const dispatch = useDispatch();
 
-  return <ProfileOrdersUI orders={orders} />;
+    const { orders, isLoading } = useSelector((state) => state.orders);
+
+    useEffect(() => {
+        dispatch(fetchOrders());
+    }, [dispatch]);
+
+    // Show preloader only when loading and there are no orders yet
+    if (isLoading && !orders.length) {
+        return <Preloader />;
+    }
+
+    return <ProfileOrdersUI orders={orders} />;
 };
