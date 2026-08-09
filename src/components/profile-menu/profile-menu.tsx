@@ -1,11 +1,24 @@
 import { FC } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 import { ProfileMenuUI } from '@ui';
+import { useDispatch } from '../../services/store';
+import { logoutUser } from '../../services/slices/user-slice';
 
 export const ProfileMenu: FC = () => {
-  const { pathname } = useLocation();
+    const { pathname } = useLocation();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-  const handleLogout = () => {};
 
-  return <ProfileMenuUI handleLogout={handleLogout} pathname={pathname} />;
+      // Handle user logout: dispatch the action and redirect to login on success.
+
+    const handleLogout = () => {
+        dispatch(logoutUser())
+            .unwrap()
+            .then(() => navigate('/login'))
+            .catch(() => undefined);
+    };
+
+    return <ProfileMenuUI handleLogout={handleLogout} pathname={pathname} />;
 };
