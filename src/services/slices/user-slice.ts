@@ -24,7 +24,7 @@ const initialState: TUserState = {
   isLoading: false,
   error: null
 };
-
+// standard user-slice for auth/reg etc (from my yandex lessons)
 const saveTokens = (accessToken: string, refreshToken: string) => {
   setCookie('accessToken', accessToken);
   localStorage.setItem('refreshToken', refreshToken);
@@ -91,7 +91,7 @@ const userSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message || 'Не получилось зарегистрироваться';
+        state.error = action.error.message || 'Не удалось зарегистрироваться';
       })
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
@@ -104,7 +104,7 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message || 'Не получилось войти';
+        state.error = action.error.message || 'Не удалось войти';
       })
       .addCase(checkUserAuth.fulfilled, (state, action) => {
         state.isAuthChecked = true;
@@ -124,7 +124,7 @@ const userSlice = createSlice({
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message || 'Не получилось обновить профиль';
+        state.error = action.error.message || 'Не удалось обновить профиль';
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;

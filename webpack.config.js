@@ -81,10 +81,11 @@ module.exports = {
       '@selectors': path.resolve(__dirname, './src/services/selectors')
     }
   },
-  output: {
-    path: path.resolve(__dirname, './dist'),
-    filename: 'bundle.js'
-  },
+output: {
+  path: path.resolve(__dirname, './dist'),
+  filename: 'bundle.js',
+  publicPath: '/'
+},
   devServer: {
     static: path.join(__dirname, './dist'),
     compress: true,

@@ -1,44 +1,43 @@
 .header {
-    background-color: var(--background);
+  background-color: var(--background);
 }
-
 .menu {
-    display: flex;
-    align-items: center;
-    max-width: 1240px;
-    height: 56px;
-    margin: 0 auto;
+  display: flex;
+  align-items: center;
+  max-width: 1240px;
+  height: 56px;
+  margin: 0 auto;
 }
 
 .menu_part_left {
-    display: flex;
-    flex-basis: 35%;
+  display: flex;
+  flex-basis: 35%;
 }
 
 .link {
-    display: flex;
-    text-decoration: none;
-    color: var(--text-inactive-color);
+  display: flex;
+  text-decoration: none;
+  color: var(--text-inactive-color);
 }
 
 .link_active {
-    color: var(--text-primary-color);
+  color: var(--text-primary-color);
 }
 
 .link_position_last {
-    display: flex;
-    justify-content: flex-end;
-    flex-basis: 35%;
+  display: flex;
+  justify-content: flex-end;
+  flex-basis: 35%;
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    margin: 0 auto;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
 }
 
 .link_position_last,
 .logo {
-    text-decoration: none;
-    color: var(--text-primary-color);
+  text-decoration: none;
+  color: var(--text-primary-color);
 }
