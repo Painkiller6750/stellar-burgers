@@ -9,9 +9,18 @@ import {
   fetchOrderByNumber
 } from '../../services/slices/orders-slice';
 
-export const OrderInfo: FC = () => {
+interface OrderInfoProps {
+  orderNumber?: string;
+}
+
+export const OrderInfo: FC<OrderInfoProps> = ({ orderNumber }) => {
   const dispatch = useDispatch();
-  const { number } = useParams();
+
+  // Если номер пришёл через проп (из App), используем его, иначе читаем из params
+  // Это нужно, чтобы работало и при открытии модалки (где params может быть не тем, что ожидает логика)
+  const urlParams = useParams<{ number?: string }>();
+  const number = orderNumber ?? urlParams.number;
+
   const { orderData, isLoading } = useSelector((state) => state.orders);
   const ingredients = useSelector((state) => state.ingredients.ingredients);
 
@@ -38,7 +47,7 @@ export const OrderInfo: FC = () => {
         else acc[item].count += 1;
         return acc;
       },
-      {}
+      {} as TIngredientsWithCount
     );
 
     const total = Object.values(ingredientsInfo).reduce(
@@ -56,5 +65,5 @@ export const OrderInfo: FC = () => {
 
   if (isLoading || !orderInfo) return <Preloader />;
 
-  return <OrderInfoUI orderInfo={orderInfo} />;
+  return <OrderInfoUI orderInfo={orderInfo} orderNumber={number} />;
 };
