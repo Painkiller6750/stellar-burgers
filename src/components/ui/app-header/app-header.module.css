@@ -35,3 +35,9 @@
   align-items: center;
   margin: 0 auto;
 }
+
+.link_position_last,
+.logo {
+  text-decoration: none;
+  color: var(--text-primary-color);
+}
