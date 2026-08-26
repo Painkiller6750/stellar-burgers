@@ -6,13 +6,13 @@ export default defineConfig({
   fullyParallel: false,
   reporter: 'list',
   use: {
-    baseURL: 'http://localhost:4001',
+    baseURL: 'http://localhost:4000',
     trace: 'retain-on-failure'
-  },
-  webServer: {
+  }
+  /*webServer: {
     command: 'npm run start',
     url: 'http://localhost:4001',
     reuseExistingServer: true,
     timeout: 120000
-  }
+  }*/
 });

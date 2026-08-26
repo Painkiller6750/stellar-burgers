@@ -22,29 +22,42 @@ test.describe('constructor page', () => {
   });
 
   test('add bun and filling from ingredients list to constructor', async ({
-    page
-  }) => {
+                                                                            page,
+                                                                          }) => {
     await page.goto('/');
 
+    const constructorArea = page.getByTestId('constructor-area');
+    const modal = page.getByTestId('modal');
+
+    // 1. Сheck init state: the constructor is empty (placeholders are shown), modal is closed
+    await expect(modal).toHaveCount(0);
+    await expect(constructorArea.getByTestId('placeholder-bun-top')).toBeVisible();
+    await expect(constructorArea.getByTestId('placeholder-bun-bottom')).toBeVisible();
+    await expect(constructorArea.getByTestId('placeholder-filling')).toBeVisible();
+
+    // 2. add ingredients
     await addIngredient(page, bunName);
     await addIngredient(page, mainName);
     await addIngredient(page, sauceName);
 
-    await expect(page.getByText(`${bunName} (верх)`)).toBeVisible();
-    await expect(page.getByText(`${bunName} (низ)`)).toBeVisible();
-    await expect(page.getByText(mainName).nth(1)).toBeVisible();
-    await expect(page.getByText(sauceName).nth(1)).toBeVisible();
+    // 3. Check that the ingredients have appeared in the constructor
+    await expect(constructorArea.getByText(`${bunName} (верх)`)).toBeVisible();
+    await expect(constructorArea.getByText(`${bunName} (низ)`)).toBeVisible();
+    await expect(constructorArea.getByText(mainName)).toBeVisible();
+    await expect(constructorArea.getByText(sauceName)).toBeVisible();
   });
+
   test('create the order, show its number and clean constructor', async ({
-    context,
-    page
-  }) => {
+                                                                           context,
+                                                                           page,
+                                                                         }) => {
+    // Auth (mock)
     await context.addCookies([
       {
         name: 'accessToken',
         value: 'Bearer mockAccessToken',
-        url: 'http://localhost:4000'
-      }
+        url: 'http://localhost:4000',
+      },
     ]);
     await page.addInitScript(() => {
       window.localStorage.setItem('refreshToken', 'mockRefreshToken');
@@ -52,54 +65,76 @@ test.describe('constructor page', () => {
 
     await page.goto('/');
 
+    const constructorArea = page.getByTestId('constructor-area');
+    const modal = page.getByTestId('modal');
+    const modalOverlay = page.getByTestId('modal-overlay');
+
+    // Init state: modal is closed, placeholders are here
+    await expect(modal).toHaveCount(0);
+    await expect(constructorArea.getByTestId('placeholder-bun-top')).toBeVisible();
+    await expect(constructorArea.getByTestId('placeholder-bun-bottom')).toBeVisible();
+    await expect(constructorArea.getByTestId('placeholder-filling')).toBeVisible();
+
+    // Create a burger
     await addIngredient(page, bunName);
     await addIngredient(page, mainName);
 
+    // order it
     await page.getByRole('button', { name: 'Оформить заказ' }).click();
 
-    const modal = page.getByTestId('modal');
-
+    // The modal has appeared with the order number
     await expect(modal).toBeVisible();
     await expect(modal).toContainText(orderNumber);
     await expect(modal).toContainText('идентификатор заказа');
-    await expect(page.getByText('Выберите булки')).toHaveCount(2);
-    await expect(page.getByText('Выберите начинку')).toBeVisible();
 
+    // After the order the constructor is empty (+smth is visible again)
+    await expect(constructorArea.getByTestId('placeholder-bun-top')).toBeVisible();
+    await expect(constructorArea.getByTestId('placeholder-bun-bottom')).toBeVisible();
+    await expect(constructorArea.getByTestId('placeholder-filling')).toBeVisible();
+
+    // Close the modal
     await page.getByTestId('modal-close-button').click();
     await expect(modal).not.toBeVisible();
   });
 
   test('open ingredient modal with clicked ingredient data then close it', async ({
-    page
-  }) => {
+                                                                                    page,
+                                                                                  }) => {
     await page.goto('/');
 
+    const modal = page.getByTestId('modal');
+    const modalOverlay = page.getByTestId('modal-overlay');
+
+    // Init state -modal is closed
+    await expect(modal).toHaveCount(0);
+
+    // Open modal by ingredients link
     await page
       .locator('li')
       .filter({ hasText: mainName })
       .getByRole('link')
       .click();
 
-    const modal = page.getByTestId('modal');
-
     await expect(modal).toBeVisible();
     await expect(modal).toContainText('Детали ингредиента');
     await expect(modal).toContainText(mainName);
     await expect(modal).toContainText('Калории, ккал');
 
+    // Close using btn
     await page.getByTestId('modal-close-button').click();
     await expect(modal).not.toBeVisible();
 
+    // Open and close using overlay again
     await page
       .locator('li')
       .filter({ hasText: bunName })
       .getByRole('link')
       .click();
 
-    await expect(page.getByTestId('modal')).toContainText(bunName);
-    await page
-      .getByTestId('modal-overlay')
-      .click({ position: { x: 10, y: 10 } });
-    await expect(page.getByTestId('modal')).not.toBeVisible();
+    await expect(modal).toBeVisible();
+    await expect(modal).toContainText(bunName);
+
+    await modalOverlay.click({ position: { x: 10, y: 10 } });
+    await expect(modal).not.toBeVisible();
   });
 });
