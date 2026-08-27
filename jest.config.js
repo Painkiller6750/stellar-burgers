@@ -1,0 +1,20 @@
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  roots: ['<rootDir>/src'],
+  testMatch: ['**/__tests__/**/*.test.ts'],
+  moduleNameMapper: {
+    '^@pages$': '<rootDir>/src/pages',
+    '^@components$': '<rootDir>/src/components',
+    '^@ui$': '<rootDir>/src/components/ui',
+    '^@ui-pages$': '<rootDir>/src/components/ui/pages',
+    '^@utils-types$': '<rootDir>/src/utils/types.ts',
+    '^@api$': '<rootDir>/src/utils/burger-api.ts',
+    '^@slices$': '<rootDir>/src/services/slices',
+    '^@selectors$': '<rootDir>/src/services/selectors',
+    '\\.(css|less|scss|sass)$':
+      '<rootDir>/src/services/slices/__tests__/style-mock.ts',
+    '\\.(jpg|jpeg|png|svg|woff|woff2)$':
+      '<rootDir>/src/services/slices/__tests__/file-mock.ts'
+  }
+};
